@@ -1,0 +1,6 @@
+Usage: rcm certbot obtain [options]
+
+Options:
+   --cloudflare-token=TOKEN
+        Token access from cloudflare.com to consume Cloudflare API.
+        Prepopulate value from variable CLOUDFLARE_TOKEN.
