@@ -1,8 +1,10 @@
 #!/bin/bash
 
+NAMESPACE=ijortengab/rcm-cloudflare-api
+
 if [[ "$EUID" -ne 0 ]]; then
     echo This script needs to be run with superuser privileges
-    exit
+    exit 1
 fi
 
 if ! command -v rcm > /dev/null;then
@@ -14,7 +16,8 @@ RCM_PREFIX=${RCM_PREFIX:=/usr/local/rcm}
 RCM_VERSION=`rcm --version 2>&1`
 RCM_LIB="${RCM_PREFIX}/lib/${RCM_VERSION}"
 
-[ -f "${RCM_LIB}/require.sh" ] && source "${RCM_LIB}/require.sh" || { echo File is not found: "${RCM_LIB}/require.sh." >&2; exit 1; }
+[ -f "${RCM_LIB}/require.sh" ] || { echo File is not found: require.sh. >&2; exit 1; }
+source "${RCM_LIB}"/require.sh
 
 # ------------------------------------------------------------------------------
 
@@ -80,3 +83,21 @@ if [ -n "$found" ];then
 else
     ____
 fi
+
+chapter Memeriksa direktori lainnya.
+source="${PWD}"
+target="${RCM_LIB}/vendor/${NAMESPACE}"
+code source=$
+code target=$
+____
+
+while IFS= read -r line; do
+    if [ -z "$line" ];then
+        continue
+    fi
+    if [[ "$line" == rcm ]];then
+        continue
+    fi
+    [[ -d "${source}/${line}" ]] || continue
+    link-symbolic-dir "${source}/${line}" "${target}/${line}" - absolute
+done <<< `ls -1 "$source"`
